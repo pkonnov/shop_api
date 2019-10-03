@@ -65,7 +65,7 @@ class Order(models.Model):
   user = models.ForeignKey('User', on_delete=models.CASCADE, null=True)
   mailing_addr_user = models.CharField('Почтовый адрес', max_length=200)
   product = models.ManyToManyField(Product)
-  count = models.IntegerField('Колличество товара')
+  count = models.IntegerField('Количество товара')
   place_of_order = models.DateTimeField('Дата и время оформления заказа', auto_now=False, auto_now_add=True)
   order_status = models.BooleanField('Статус заказа', default=False, choices=ORDER_STATUS_VALUE)
   total_cost = models.DecimalField('Стоимость', max_digits=8, decimal_places=2)
