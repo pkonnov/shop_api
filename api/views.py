@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response 
 from .models import Order
 from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer
 import datetime
+
 
 class OrderView(APIView):
 
@@ -23,6 +24,17 @@ class OrderView(APIView):
     if serializer.is_valid(raise_exception=True):
       order_saved = serializer.save()
     return Response({'success': f'Order {order_saved.id} created'})
+
+  def put(self, request, pk):
+    # update order status
+    data = request.data.get('order_status')
+    if data == 'True' or data == 'False':
+      obj, created = Order.objects.update_or_create(
+          pk=pk,
+          defaults={'order_status': data}
+      )
+      return Response({'success': f'order update status {obj.id}'})
+    return Response({'error': 'invalid data'})
   
 
 # get orders in email
@@ -37,4 +49,6 @@ class OrderFilterEmailView(APIView):
       return Response({'orders with such email': serializer.data})
     return Response({'error': 'with such email not orders'})
 
-# class UserLi
+# class OrderChangeStatusView(APIView):
+
+#   def update(self, request):

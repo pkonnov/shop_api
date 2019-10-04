@@ -16,6 +16,9 @@ class User(models.Model):
   email = models.CharField('email', max_length=100) 
   create_date = models.DateTimeField('Дата создания', auto_now=False, auto_now_add=True)
 
+  def __str__(self):
+    return self.name
+
   class Meta:
     db_table = 'shop_users'
     verbose_name = "Пользователь"
@@ -30,6 +33,9 @@ class CategoryProduct(models.Model):
         db_index=True,
         unique=True,
         help_text='Будет использоваться в роутинге')
+
+  def __str__(self):
+    return self.category_name
 
   class Meta:
     db_table = 'categories'
@@ -52,6 +58,9 @@ class Product(models.Model):
   full_name_product = models.CharField('Полное имя продукта', max_length=200)
   currency = models.CharField(max_length=3, choices=CURRENCY_VALUE)
 
+  def __str__(self):
+    return self.manufacturer + ' ' + self.product_name_model
+
   class Meta:
     verbose_name = 'Товар'
     verbose_name_plural = 'Товары'
@@ -70,6 +79,9 @@ class Order(models.Model):
   order_status = models.BooleanField('Статус заказа', default=False, choices=ORDER_STATUS_VALUE)
   total_cost = models.DecimalField('Стоимость', max_digits=8, decimal_places=2)
 
+  def __str__(self):
+    return self.id
+
   class Meta:
     verbose_name = 'Заказ'
     verbose_name_plural = 'Заказы'
@@ -80,6 +92,9 @@ class UserWallet(models.Model):
   state_wallet = models.DecimalField('Состояние счета', max_digits=8, decimal_places=2)
   currency = models.CharField(max_length=3, choices=CURRENCY_VALUE)
   edit_date = models.DateTimeField('Дата изменения счета', auto_now=True)
+
+  def __str__(self):
+    return self.user.name
 
   class Meta:
     verbose_name = 'Кошелек'

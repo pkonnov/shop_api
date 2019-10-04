@@ -20,6 +20,12 @@ class OrderViewSerializer(serializers.ModelSerializer):
       order.product.add(p)
     return order
 
+  # def update(self, instance, validate_data):
+  #   print(instance)
+  #   instance.order_status = validate_data.get('order_status', instance.order_status)
+  #   instance.save()
+  #   return instance
+
   class Meta:
     model = Order
     fields = '__all__'
