@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order
+from .models import Order, User
 
 
 class OrderViewSerializer(serializers.ModelSerializer):
@@ -20,20 +20,38 @@ class OrderViewSerializer(serializers.ModelSerializer):
       order.product.add(p)
     return order
 
-  # def update(self, instance, validate_data):
-  #   print(instance)
-  #   instance.order_status = validate_data.get('order_status', instance.order_status)
-  #   instance.save()
-  #   return instance
-
   class Meta:
     model = Order
     fields = '__all__'
 
-# >> order = Order.objects.create(mailing_addr_user='городfdfd Саратов fdfул Чернышевского кв 5', count=2, order_status=True, total_cost=9100.00, user_id=1)
-# >>> order.product.add(1)
 
 class OrderFilterEmailViewSerializer(serializers.ModelSerializer):
   class Meta:
     model = Order
     fields = '__all__'
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+
+  def create(self, validate_data):
+    return User.objects.create(**validate_data)
+
+  def update(self, instance, validate_data):
+    instance.name = validate_data.get('name', instance.name)
+    instance.lastname = validate_data.get('lastname', instance.lastname)
+    instance.patronymic = validate_data.get('patronymic', instance.patronymic)
+    instance.full_name = validate_data.get('full_name', instance.full_name)
+    instance.email = validate_data.get('email', instance.email)
+    instance.save()
+    return instance
+
+  class Meta:
+    model = User
+    fields = '__all__' 
+
+
+
+
+
+
+

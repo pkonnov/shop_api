@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response 
-from .models import Order
-from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer
+from .models import Order, User
+from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer, UserViewSerializer
 import datetime
 
 
@@ -49,6 +49,36 @@ class OrderFilterEmailView(APIView):
       return Response({'orders with such email': serializer.data})
     return Response({'error': 'with such email not orders'})
 
-# class OrderChangeStatusView(APIView):
 
-#   def update(self, request):
+class UserView(APIView):
+  
+  def get(self, request, *args, **kwargs):
+    users = User.objects.all()
+    serializer = UserViewSerializer(users, many=True)
+    return Response({'users': serializer.data})
+  
+  def post(self, request):
+    user = request.data.get('user')
+    serializer = UserViewSerializer(data=user)
+    email = serializer.initial_data['email']
+    isEmailAlreadyExist = True if len(User.objects.filter(email=email)) > 0 else False
+    if isEmailAlreadyExist:
+      return Response({'error': f'User with such email {email} already exist'})
+    if serializer.is_valid(raise_exception=True):
+      user = serializer.save()
+      return Response({'success': f'User with id={user.id} create'})
+    return Response({'error': 'invalid data'})
+
+  def put(self, request, pk):
+    update_user = get_object_or_404(User.objects.all(), pk=pk)
+    data = request.data.get('user')
+    serializer = UserViewSerializer(instance=update_user, data=data, partial=True)
+    if serializer.is_valid():
+      user = serializer.save()
+      return Response({'success': f'User with id={user.id} update'})
+    return Response({'error': '¯\＿(ツ)＿/¯'})
+
+  def delete(self, request, pk):
+    delete_user = get_object_or_404(User.objects.all(), pk=pk)
+    delete_user.delete()
+    return Response({'success': f'User with id={pk} delete'})

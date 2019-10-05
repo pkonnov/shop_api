@@ -7,7 +7,6 @@ CURRENCY_VALUE = (
   ('USD', 'usd')
 )
 
-
 class User(models.Model):
   name = models.CharField('Имя', max_length=50)
   lastname = models.CharField('Фамилия', max_length=50)
@@ -31,8 +30,7 @@ class CategoryProduct(models.Model):
   category_url = models.SlugField(
         'ЧПУ',
         db_index=True,
-        unique=True,
-        help_text='Будет использоваться в роутинге')
+        unique=True)
 
   def __str__(self):
     return self.category_name
@@ -72,9 +70,9 @@ class Order(models.Model):
     (True, 'active')
   )
   user = models.ForeignKey('User', on_delete=models.CASCADE, null=True)
-  mailing_addr_user = models.CharField('Почтовый адрес', max_length=200)
   product = models.ManyToManyField(Product)
   count = models.IntegerField('Количество товара')
+  comment_to_order = models.CharField('Комментарий к заказу', max_length=300)
   place_of_order = models.DateTimeField('Дата и время оформления заказа', auto_now=False, auto_now_add=True)
   order_status = models.BooleanField('Статус заказа', default=False, choices=ORDER_STATUS_VALUE)
   total_cost = models.DecimalField('Стоимость', max_digits=8, decimal_places=2)
