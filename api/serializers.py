@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, User
+from .models import Order, User, CategoryProduct
 
 
 class OrderViewSerializer(serializers.ModelSerializer):
@@ -47,9 +47,23 @@ class UserViewSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = '__all__' 
+    fields = '__all__'
 
 
+class CategoryProductViewSerializer(serializers.ModelSerializer):
+
+  def create(self, validate_data):
+    return CategoryProduct.objects.create(**validate_data)
+
+  def update(self, instance, validate_data):
+    instance.category_name = validate_data.get('category_name', instance.category_name)
+    instance.category_url = validate_data.get('category_url', instance.category_url)
+    instance.save()
+    return instance
+
+  class Meta:
+    model = CategoryProduct 
+    fields = '__all__'
 
 
 

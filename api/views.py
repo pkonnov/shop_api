@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response 
-from .models import Order, User
-from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer, UserViewSerializer
+from .models import Order, User, CategoryProduct
+from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer, UserViewSerializer, CategoryProductViewSerializer
+from .utils import *
 import datetime
 
 
@@ -82,3 +83,16 @@ class UserView(APIView):
     delete_user = get_object_or_404(User.objects.all(), pk=pk)
     delete_user.delete()
     return Response({'success': f'User with id={pk} delete'})
+
+
+class CategoryProductView(APIView, 
+                          InstanceGetListMxixin, 
+                          InstanceCreateMixin, 
+                          InstanceUpdateMixin, 
+                          InstanceDeleteMixin):
+
+  model = CategoryProduct
+  name_model = 'category'
+  name_instance = 'category'
+  name_serializer = CategoryProductViewSerializer 
+  error_response = '¯\＿(ツ)＿/¯'
