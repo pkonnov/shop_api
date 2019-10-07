@@ -8,29 +8,29 @@ class InstanceGetListMxixin:
   model = None
   name_model = None
   name_instance = None
-  name_serializer = None
+  serializer_class = None
   name_data_from_req = None
   
   def get(self, request, *args, **kwargs):
-    categories = self.model.objects.all()
-    serializer = self.name_serializer(categories, many=True)
-    return Response({'categories': serializer.data})
+    self.name_instance = self.model.objects.all()
+    serializer = self.serializer_class(self.name_instance, many=True)
+    return Response({f'{self.name_model}': serializer.data})
 
 
 class InstanceCreateMixin:
 
-  model = None
   name_model = None
   name_instance = None
-  name_serializer = None
+  serializer_class = None
   name_data_from_req = None
 
   def post(self, request):
     self.name_instance = request.data.get(self.name_data_from_req)
-    serializer = self.name_serializer(data=self.name_instance)
-    if serializer.is_valid(raise_exception=True):
+    serializer = self.serializer_class(data=self.name_instance)
+    print(serializer)
+    if serializer.is_valid():
       validate_data = serializer.save()
-      return Response({'success': f'{self.name_model} with id={validate_data.id} create'})
+      return Response({'success': f'{self.name_model} create'})
     return Response({'error': '¯\＿(ツ)＿/¯'})
   
 
@@ -39,16 +39,17 @@ class InstanceUpdateMixin:
   model = None
   name_model = None
   name_instance = None
-  name_serializer = None
+  serializer_class = None
   name_data_from_req = None
-
+  
   def put(self, request, pk):
     self.name_instance = get_object_or_404(self.model.objects.all(), pk=pk)
     data = request.data.get(self.name_data_from_req)
-    serializer = self.name_serializer(instance=self.name_instance, data=data, partial=True)
+    serializer = self.serializer_class(instance=self.name_instance, data=data, partial=True)
+    print(serializer.is_valid())
     if serializer.is_valid():
       validate_data = serializer.save()
-      return Response({'success': f'{self.name_model} with such id={validate_data.id} update'})
+      return Response({'success': f'{self.name_model} update'})
     return Response({'error': '¯\＿(ツ)＿/¯'})
 
 
@@ -57,7 +58,7 @@ class InstanceDeleteMixin:
   model = None
   name_model = None
   name_instance = None
-  name_serializer = None
+  serializer_class = None
   name_data_from_req = None
 
   def delete(self, request, pk):

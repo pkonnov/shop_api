@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response 
-from .models import Order, User, CategoryProduct
-from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer, UserViewSerializer, CategoryProductViewSerializer
+from .models import Order, User, CategoryProduct, Product, UserWallet
+from .serializers import OrderViewSerializer, OrderFilterEmailViewSerializer, UserViewSerializer, CategoryProductViewSerializer, ProductViewSerializer, UserWalletViewSerializer
 from .utils import *
 import datetime
 
@@ -94,5 +94,31 @@ class CategoryProductView(APIView,
   model = CategoryProduct
   name_model = 'category'
   name_instance = 'category'
-  name_serializer = CategoryProductViewSerializer 
-  error_response = '¯\＿(ツ)＿/¯'
+  name_data_from_req = 'category'
+  serializer_class = CategoryProductViewSerializer 
+
+
+class ProductView(APIView, 
+                    InstanceGetListMxixin, 
+                    InstanceCreateMixin, 
+                    InstanceUpdateMixin,
+                    InstanceDeleteMixin):
+
+  model = Product
+  name_model = 'product'
+  name_instance = 'product'
+  name_data_from_req = 'product' 
+  serializer_class = ProductViewSerializer
+
+
+class UserWalletView(APIView, 
+                    InstanceGetListMxixin, 
+                    InstanceCreateMixin, 
+                    InstanceUpdateMixin,
+                    InstanceDeleteMixin):
+                    
+  model = UserWallet 
+  name_model = 'user_wallet'
+  name_instance = 'user_wallet'
+  name_data_from_req = 'user_wallet' 
+  serializer_class = UserWalletViewSerializer
