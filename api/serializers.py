@@ -8,16 +8,18 @@ class OrderViewSerializer(serializers.ModelSerializer):
     mailing_addr_user = validate_data['mailing_addr_user']
     count = validate_data['count']
     order_status = validate_data['order_status']
+    comment_to_order = validate_data['comment_to_order']
     total_cost = validate_data['total_cost']
     user = validate_data['user']
-    products = validate_data['product']
+    product = validate_data['product']
     order = Order.objects.create(
       mailing_addr_user=mailing_addr_user,
       count=count, order_status=order_status,
       total_cost=total_cost,
-      user=user)
-    for p in products:
-      order.product.add(p)
+      user=user, product=product,
+      comment_to_order=comment_to_order)
+    # for p in products:
+    #   order.product.add(p)
     return order
 
   class Meta:

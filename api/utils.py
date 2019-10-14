@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from .models import User, Product, UserWallet
 
 
 class InstanceGetListMxixin:
@@ -65,6 +66,25 @@ class InstanceDeleteMixin:
     self.name_instance = get_object_or_404(self.model.objects.all(), pk=pk)
     self.name_instance.delete()
     return Response({'success': f'{self.name_model} with id={pk} delete'})
+
+
+def checks_empty_data(request, endpoint_name):
+  is_empty_data = len(request.data) == 0 or request.data.get(endpoint_name) == None
+  if (is_empty_data):
+    return True 
+  return False 
+
+
+def checks_user_wallet_currency(user_id, id_product, count_product):
+  wallet = UserWallet.objects.filter(user_id=user_id).first()
+  if wallet == None:
+    return True
+  user_state_wallet = float(wallet.state_wallet)
+  product = Product.objects.filter(id=id_product).first()
+  product_cost = (product.cost * count_product)  
+  if (product_cost > user_state_wallet):
+    return True
+  return False
 
 
 def replace_rus_to_eng(string):

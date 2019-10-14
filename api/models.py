@@ -50,7 +50,7 @@ class Product(models.Model):
         related_name='products')
   manufacturer = models.CharField('Производитель', max_length=50)
   product_name_model = models.CharField('Имя модели', max_length=50)
-  manufacturer_date = models.DateField('Дата производства', null=True)
+  manufacturer_date = models.DateField('Дата производства', null=False)
   product_color = models.CharField('Цвет товара', max_length=50)
   cost = models.DecimalField('Стоимость', max_digits=8, decimal_places=2)
   full_name_product = models.CharField('Полное имя продукта', max_length=200)
@@ -69,9 +69,9 @@ class Order(models.Model):
     (False, 'canceled'),
     (True, 'active')
   )
-  user = models.ForeignKey('User', on_delete=models.CASCADE, null=True)
+  user = models.ForeignKey('User', on_delete=models.CASCADE, null=False)
   mailing_addr_user = models.CharField('Почтовый адрес', max_length=200)
-  product = models.OneToOneField(Product, on_delete=models.CASCADE)
+  product = models.ForeignKey('Product', on_delete=models.CASCADE, null=False)
   count = models.IntegerField('Количество товара')
   comment_to_order = models.CharField('Комментарий к заказу', max_length=300)
   place_of_order = models.DateTimeField('Дата и время оформления заказа', auto_now=False, auto_now_add=True)
@@ -79,7 +79,7 @@ class Order(models.Model):
   total_cost = models.DecimalField('Стоимость', max_digits=8, decimal_places=2)
 
   def __str__(self):
-    return self.id
+    return self.mailing_addr_user
 
   class Meta:
     verbose_name = 'Заказ'

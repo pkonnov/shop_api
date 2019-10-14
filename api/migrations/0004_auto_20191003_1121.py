@@ -15,17 +15,4 @@ class Migration(migrations.Migration):
             name='product',
             options={'verbose_name': 'Товар', 'verbose_name_plural': 'Товары'},
         ),
-        migrations.CreateModel(
-            name='Order',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mailing_addr_user', models.CharField(max_length=200, verbose_name='Почтовый адрес')),
-                ('count', models.IntegerField(verbose_name='Колличество товара')),
-                ('place_of_order', models.DateTimeField(auto_now_add=True, verbose_name='Дата и время оформления заказа')),
-                ('order_status', models.BooleanField(choices=[(False, 'canceled'), (True, 'active')], default=False, verbose_name='Статус заказа')),
-                ('total_cost', models.DecimalField(decimal_places=2, max_digits=8, verbose_name='Стоимость')),
-                ('product', models.ManyToManyField(to='api.Product')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='api.User')),
-            ],
-        ),
     ]

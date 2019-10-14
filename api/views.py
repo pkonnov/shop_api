@@ -16,6 +16,14 @@ class OrderView(APIView):
 
   def post(self, request):
     order = request.data.get('order')
+    if (checks_empty_data(request, 'order')):
+      return Response({'error': 'empty request or not found endpoint name'})
+
+    user, product_id, product_count = order['user'], order['product'], order['count']
+    if checks_user_wallet_currency(user, product_id, product_count):
+      return Response({'error':
+       'not enough balance on the cough or user does not have a wallet'})
+
     date_now = datetime.datetime.now()
     orders_today_one_addr = Order.objects.filter(place_of_order__date=date_now).filter(mailing_addr_user=order['mailing_addr_user'])
     if len(orders_today_one_addr) > 5:
@@ -24,12 +32,13 @@ class OrderView(APIView):
     serializer = OrderViewSerializer(data=order)
     if serializer.is_valid(raise_exception=True):
       order_saved = serializer.save()
-    return Response({'success': f'Order {order_saved.id} created'})
+      return Response({'success': f'Order {order_saved.id} created'})
+    return Response({'check the correctness of the transmitted data'})
 
   def put(self, request, pk):
     # update order status
     data = request.data.get('order_status')
-    if data == 'True' or data == 'False':
+    if data == 'False':
       obj, created = Order.objects.update_or_create(
           pk=pk,
           defaults={'order_status': data}
