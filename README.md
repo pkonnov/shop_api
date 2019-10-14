@@ -16,13 +16,13 @@ POST /api/v1/orders - создать новый заказ:
         }
 }
 ```
-PUT /api/v1/orders - отменить заказ
+PUT /api/v1/orders/:id(заказа) - отменить заказ
 ```json
 {
   "order_status": "False"
 }
 ```
-GET /api/v1/orders/filter-email - получить список заказов по требуемому email
+GET /api/v1/orders/filter-email - получить список заказов по требуему email
 ```json
 {
 	"email": "email пользователя"
